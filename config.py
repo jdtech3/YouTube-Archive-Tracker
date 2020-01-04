@@ -15,5 +15,9 @@ parser.read('config.ini')
 # Set config dict
 config = {
     'bot_prefix': parser['Discord']['prefix'],
-    'bot_token': parser['Discord']['token']
+    'bot_token': parser['Discord']['token'],
+
+    'auth_file': parser['Sheets']['auth_file'],
+    'spreadsheet_name': parser['Sheets']['spreadsheet_name'],
+    'tracker_worksheet_name': parser['Sheets']['tracker_worksheet_name']
 }

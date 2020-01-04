@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-admin.py - includes .load, .unload, .reload
+admin.py - includes /load, /unload, /reload
 
 Used to load/reload a cog
 """
