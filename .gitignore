@@ -2,8 +2,9 @@
 # Created by https://www.gitignore.io/api/python,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=python,visualstudiocode
 
-# Config
-config.ini
+# Config / auth files
+*config.ini
+*yt-archive-project-1d6565b80f08.json
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
@@ -112,10 +113,6 @@ dmypy.json
 
 ### VisualStudioCode ###
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
