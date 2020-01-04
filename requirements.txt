@@ -1,2 +1,3 @@
-pygsheets==2.0.2
+pygsheets==1.1.4
 discord.py==1.2.5
+oauth2client==4.1.3
