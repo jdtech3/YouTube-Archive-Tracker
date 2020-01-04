@@ -13,7 +13,7 @@ class UploadCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # .downloading
+    # .uploading
     @commands.command(name='uploading', aliases=['ul'])
     async def track_upload(self, ctx, link: str = None):
         pass
