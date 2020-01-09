@@ -7,11 +7,11 @@ crud.py - Implements the CRUD operations as well as the info
 
 # Libs
 from datetime import datetime
-from auth import tracker_wks
+from sheets.auth import tracker_wks
 
 
 # Channel object that wraps around the info
-class Channel():
+class Channel:
     def __init__(self, **kwargs):
         _fields = [
             '_id',                  # str
@@ -62,6 +62,7 @@ def create(channel_id: str, context: str) -> Channel:
     else:
         raise NotImplementedError(f'Context {context} is not implemented yet or was invalid.')
 
+
 def read(channel_id: str) -> Channel:
     # Read from worksheet - note: pygsheets address are in (col, row) format
     row = tracker_wks.find(channel_id)[0].row                                                   # get row # of channel
@@ -88,6 +89,7 @@ def read(channel_id: str) -> Channel:
     )
     return chan_obj
 
+
 def update(channel_id: str, context: str) -> Channel:
     # Contexts:
     #   - uploading
@@ -101,6 +103,7 @@ def update(channel_id: str, context: str) -> Channel:
 
     else:
         raise NotImplementedError(f'Context {context} is not implemented yet or was invalid.')
+
 
 def delete(channel_id: str) -> Channel:
     raise NotImplementedError('Delete operation is not implemented yet.')

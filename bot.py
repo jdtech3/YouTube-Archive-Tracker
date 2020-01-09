@@ -29,8 +29,8 @@ bot = commands.Bot(command_prefix=config['bot_prefix'])
 @bot.check
 async def no_pm(ctx):
     if ctx.message.guild is None:
-        embed = discord.Embed(title = "Not allowed to use this command in PMs.", colour = discord.Colour(0xd0021b))
-        await ctx.channel.send(embed = embed)
+        embed = discord.Embed(title="Not allowed to use this command in PMs.", colour=discord.Colour(0xd0021b))
+        await ctx.channel.send(embed=embed)
         return False
     else:
         return True
@@ -39,15 +39,16 @@ async def no_pm(ctx):
 # .version
 @bot.command()
 async def version(ctx):
-    embed = discord.Embed(title = f"*The Tracker*  **v{__version__}**", colour = discord.Colour(0xf8e71c))
-    await ctx.send(embed = embed)
+    embed = discord.Embed(title=f"*The Tracker*  **v{__version__}**", colour=discord.Colour(0xf8e71c))
+    await ctx.send(embed=embed)
+
 
 # Playing... animation
 async def presence_animation():
     while True:
-        await bot.change_presence(activity = discord.Game(f'Tracker | {"?"} videos archived'))
+        await bot.change_presence(activity=discord.Game(f'Tracker | {"?"} videos archived'))
         await asyncio.sleep(120)
-        await bot.change_presence(activity = discord.Game('/help | ~ made by JDTech ~'))
+        await bot.change_presence(activity=discord.Game('/help | ~ made by JDTech ~'))
         await asyncio.sleep(30)
 
 
