@@ -36,6 +36,16 @@ async def no_pm(ctx):
         return True
 
 
+# Reply to mentions
+@bot.event
+async def on_message(message):
+    if message.content == '<@!662158675275808768>':
+        embed = discord.Embed(title="Hi there! Do `/help` to see what I can do for ya :smile:", colour=discord.Colour(0x7ed321))
+        await message.channel.send(embed=embed)
+    else:
+        await bot.process_commands(message)
+
+
 # .version
 @bot.command()
 async def version(ctx):
