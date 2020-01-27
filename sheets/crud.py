@@ -8,6 +8,7 @@ crud.py - Implements the CRUD operations as well as the info
 # Libs
 from datetime import datetime
 from sheets.auth import tracker_wks
+from typing import List
 
 
 # Channel object that wraps around the info
@@ -69,37 +70,41 @@ def create(channel_id: str, context: str) -> Channel:
         raise NotImplementedError(f'Context {context} is not implemented yet or was invalid.')
 
 
-def read(channel_id: str) -> Channel:
-    # Read from worksheet - note: pygsheets address are in (col, row) format
-    row = tracker_wks.find(channel_id)[0].row                                                   # get row # of channel
-    chan_data = tracker_wks.get_values(start=(row, 1), end=(row, 13), returnas='cell')[0]       # get list of pygsheets.Cell
+def read(channel_id: str) -> List[Channel]:
+    channels = []
+    for record in tracker_wks.find(channel_id):
+        # Read from worksheet - note: pygsheets address are in (col, row) format
+        row = record.row                                                                        # get row # of channel
+        chan_data = tracker_wks.get_values(start=(row, 1), end=(row, 13), returnas='cell')[0]   # get list of pygsheets.Cell
 
-    # Preprocessing of dates
-    # total_videos_date_str = chan_data[4].note.replace('As of ', '')
-    # total_videos_date = datetime.strptime(total_videos_date_str, '%Y-%m-%d').date()
-    last_update_date_str = chan_data[7].value
-    # Questionable 1-liner again...
-    last_update_date = datetime.strptime(last_update_date_str, '%Y-%m-%d').date() if last_update_date_str != 'Unknown' else last_update_date_str
-    # Set total_videos_date to last_update_date fow now
-    total_videos_date = last_update_date
+        # Preprocessing of dates
+        # total_videos_date_str = chan_data[4].note.replace('As of ', '')
+        # total_videos_date = datetime.strptime(total_videos_date_str, '%Y-%m-%d').date()
+        last_update_date_str = chan_data[7].value
+        # Questionable 1-liner again...
+        last_update_date = datetime.strptime(last_update_date_str, '%Y-%m-%d').date() if last_update_date_str != 'Unknown' else last_update_date_str
+        # Set total_videos_date to last_update_date fow now
+        total_videos_date = last_update_date
 
-    chan_obj = Channel(
-        _id=chan_data[0].value,
-        name=chan_data[1].value,
-        link=chan_data[2].value,
-        uploader=chan_data[3].value,
-        total_videos=chan_data[4].value,
-        total_videos_date=total_videos_date,
-        uploaded_videos=chan_data[5].value,
-        size_GB=chan_data[6].value,
-        last_update_date=last_update_date,
-        status=chan_data[8].value,
-        description=chan_data[9].value,
-        notes=chan_data[10].value,
-        language=chan_data[11].value,
-        uploader_email=chan_data[12].value
-    )
-    return chan_obj
+        chan_obj = Channel(
+            _id=chan_data[0].value,
+            name=chan_data[1].value,
+            link=chan_data[2].value,
+            uploader=chan_data[3].value,
+            total_videos=chan_data[4].value,
+            total_videos_date=total_videos_date,
+            uploaded_videos=chan_data[5].value,
+            size_GB=chan_data[6].value,
+            last_update_date=last_update_date,
+            status=chan_data[8].value,
+            description=chan_data[9].value,
+            notes=chan_data[10].value,
+            language=chan_data[11].value,
+            uploader_email=chan_data[12].value
+        )
+        channels.append(chan_obj)
+
+    return channels
 
 
 def update(channel_id: str, context: str) -> Channel:

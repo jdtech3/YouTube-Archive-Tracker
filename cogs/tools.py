@@ -40,32 +40,32 @@ class ToolsCog(commands.Cog):
     @commands.command(name='view', aliases=['check'])
     async def view_chan_info(self, ctx, link: str = None):
         if link is not None:
-            chan = sheets.crud.read(channel_id=self.find_chan_id(link=link))
+            records = sheets.crud.read(channel_id=self.find_chan_id(link=link))
+            for chan in records:
+                embed = discord.Embed(title=chan.name, colour=discord.Colour(0x7ed321), url=chan.link, timestamp=datetime.now())
 
-            embed = discord.Embed(title=chan.name, colour=discord.Colour(0x7ed321), url=chan.link, timestamp=datetime.now())
+                embed.set_footer(text="The Tracker", icon_url="https://cdn.discordapp.com/avatars/662158675275808768/d01a9cca20797ad7c1b9b5a631b96029.png?size=128")
 
-            embed.set_footer(text="The Tracker", icon_url="https://cdn.discordapp.com/avatars/662158675275808768/d01a9cca20797ad7c1b9b5a631b96029.png?size=128")
+                embed.add_field(name="Channel ID", value=chan.id, inline=False)
 
-            embed.add_field(name="Channel ID", value=chan.id, inline=False)
+                # Grab the mention (if possible)
+                uploader = discord.utils.get(ctx.guild.members, name=chan.uploader.split('#')[0], discriminator=chan.uploader.split('#')[1])
+                embed.add_field(name="Channel Archiver", value=uploader.mention if uploader else chan.uploader, inline=False)
 
-            # Grab the mention (if possible)
-            uploader = discord.utils.get(ctx.guild.members, name=chan.uploader.split('#')[0], discriminator=chan.uploader.split('#')[1])
-            embed.add_field(name="Channel Archiver", value=uploader.mention if uploader else chan.uploader, inline=False)
+                embed.add_field(name="Total Videos", value=f'{chan.total_videos} *(as of {chan.total_videos_date.strftime("%Y-%m-%d") if chan.total_videos_date != "Unknown" else chan.total_videos_date})*')
+                embed.add_field(name="Total Videos Archived", value=chan.uploaded_videos)
+                embed.add_field(name="Total Archive Size (GB)", value=chan.size_GB)
 
-            embed.add_field(name="Total Videos", value=f'{chan.total_videos} *(as of {chan.total_videos_date.strftime("%Y-%m-%d") if chan.total_videos_date != "Unknown" else chan.total_videos_date})*')
-            embed.add_field(name="Total Videos Archived", value=chan.uploaded_videos)
-            embed.add_field(name="Total Archive Size (GB)", value=chan.size_GB)
+                # Questionable 1-liner yet again... screw PEP-8 xD
+                embed.add_field(name="Last Update", value=chan.last_update_date.strftime('%Y-%m-%d') if chan.last_update_date != "Unknown" else chan.last_update_date)
 
-            # Questionable 1-liner yet again... screw PEP-8 xD
-            embed.add_field(name="Last Update", value=chan.last_update_date.strftime('%Y-%m-%d') if chan.last_update_date != "Unknown" else chan.last_update_date)
+                embed.add_field(name="Archival Status", value=chan.status)
+                embed.add_field(name="Description", value=chan.description)
+                embed.add_field(name="Notes", value=chan.notes)
+                embed.add_field(name="Channel Language", value=chan.language)
+                embed.add_field(name="Uploader Email", value=f'`{chan.uploader_email}`')
 
-            embed.add_field(name="Archival Status", value=chan.status)
-            embed.add_field(name="Description", value=chan.description)
-            embed.add_field(name="Notes", value=chan.notes)
-            embed.add_field(name="Channel Language", value=chan.language)
-            embed.add_field(name="Uploader Email", value=f'`{chan.uploader_email}`')
-
-            await ctx.send(embed=embed)
+                await ctx.send(embed=embed)
 
         else:
             embed = discord.Embed(title = "No channel link given. Usage: `/view <channel link>`", colour = discord.Colour(0xd0021b))
