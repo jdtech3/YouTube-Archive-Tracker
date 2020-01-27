@@ -48,7 +48,7 @@ async def presence_animation():
     while True:
         await bot.change_presence(activity=discord.Game(f'Tracker | {"?"} videos archived'))
         await asyncio.sleep(120)
-        await bot.change_presence(activity=discord.Game('/help | ~ made by JDTech ~'))
+        await bot.change_presence(activity=discord.Game(f'/help | ~ made by {__author__} ~'))
         await asyncio.sleep(30)
 
 
