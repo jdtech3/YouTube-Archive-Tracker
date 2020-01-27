@@ -22,13 +22,16 @@ class Channel:
             'total_videos_date',    # datetime.date
             'uploaded_videos',      # int
             'size_GB',              # float
-            'upload_date',          # datetime.date
+            'last_update_date',     # datetime.date
             'status',               # str
-            'reason'                # str
+            'description',          # str
+            'notes',                # str
+            'language',             # str
+            'uploader_email'        # str
         ]
 
         for arg in kwargs.keys():
-            if not arg in _fields:
+            if arg not in _fields:
                 raise AttributeError(f'Invalid keyword argument received: {arg}')
 
         # Turn all empty str into None
@@ -43,9 +46,12 @@ class Channel:
         self.total_videos_date = kwargs['total_videos_date']
         self.uploaded_videos = int(kwargs['uploaded_videos'])   if kwargs['uploaded_videos'] else None
         self.size_GB = float(kwargs['size_GB'])                 if kwargs['size_GB'] else None
-        self.upload_date = kwargs['upload_date']
+        self.last_update_date = kwargs['last_update_date']
         self.status = kwargs['status']
-        self.reason = kwargs['reason']
+        self.description = kwargs['description']
+        self.notes = kwargs['notes']
+        self.language = kwargs['language']
+        self.uploader_email = kwargs['uploader_email']
 
 
 def create(channel_id: str, context: str) -> Channel:
@@ -66,13 +72,16 @@ def create(channel_id: str, context: str) -> Channel:
 def read(channel_id: str) -> Channel:
     # Read from worksheet - note: pygsheets address are in (col, row) format
     row = tracker_wks.find(channel_id)[0].row                                                   # get row # of channel
-    chan_data = tracker_wks.get_values(start=(row, 1), end=(row, 11), returnas='cell')[0]       # get list of pygsheets.Cell
+    chan_data = tracker_wks.get_values(start=(row, 1), end=(row, 13), returnas='cell')[0]       # get list of pygsheets.Cell
 
     # Preprocessing of dates
-    total_videos_date_str = chan_data[4].note.replace('As of ', '')
-    total_videos_date = datetime.strptime(total_videos_date_str, '%Y-%m-%d').date()
-    upload_date_str = chan_data[8].value
-    upload_date = datetime.strptime(upload_date_str, '%Y-%m-%d').date()
+    # total_videos_date_str = chan_data[4].note.replace('As of ', '')
+    # total_videos_date = datetime.strptime(total_videos_date_str, '%Y-%m-%d').date()
+    last_update_date_str = chan_data[7].value
+    # Questionable 1-liner again...
+    last_update_date = datetime.strptime(last_update_date_str, '%Y-%m-%d').date() if last_update_date_str != 'Unknown' else last_update_date_str
+    # Set total_videos_date to last_update_date fow now
+    total_videos_date = last_update_date
 
     chan_obj = Channel(
         _id=chan_data[0].value,
@@ -83,9 +92,12 @@ def read(channel_id: str) -> Channel:
         total_videos_date=total_videos_date,
         uploaded_videos=chan_data[5].value,
         size_GB=chan_data[6].value,
-        upload_date=upload_date,
-        status=chan_data[9].value,
-        reason=chan_data[10].value
+        last_update_date=last_update_date,
+        status=chan_data[8].value,
+        description=chan_data[9].value,
+        notes=chan_data[10].value,
+        language=chan_data[11].value,
+        uploader_email=chan_data[12].value
     )
     return chan_obj
 
