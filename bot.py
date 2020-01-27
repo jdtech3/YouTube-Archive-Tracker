@@ -12,11 +12,11 @@ from discord.ext import commands
 from config import config
 
 __author__ = 'JDTech'
-__version__ = '0.0.1'
+__version__ = '0.1.0'
 
 
 # Default enabled cogs
-initial_cogs = ['cogs.admin']
+initial_cogs = ['cogs.admin', 'cogs.tools']
 
 
 # Bot stuff
