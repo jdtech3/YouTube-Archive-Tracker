@@ -16,7 +16,7 @@ __version__ = '0.1.0'
 
 
 # Default enabled cogs
-initial_cogs = ['cogs.admin', 'cogs.tools']
+initial_cogs = ['cogs.admin', 'cogs.tools', 'cogs.help']
 
 
 # Bot stuff
