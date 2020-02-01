@@ -18,6 +18,7 @@ class Request:
             'name',                 # str
             'link',                 # str
             'requester',            # str
+            'reason',
             'filled',               # bool
             'filled_by',            # List[str]
         ]
@@ -32,6 +33,7 @@ class Request:
         self.name = kwargs['name']
         self.link = kwargs['link']
         self.requester = kwargs['requester']
+        self.reason = kwargs['reason']
 
         # Process filled: turn 'Yes', 'No' to True, False
         if kwargs['filled'] == 'Yes':
@@ -58,6 +60,7 @@ def read() -> List[Request]:
             name=record['Channel Name'],
             link=record['Channel URL'],
             requester=record['Requester'],
+            reason=record['Reason/Notes'],
             filled=record['Filled?\n(auto checks channels)'],
             filled_by=filled_by
         )
