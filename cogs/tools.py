@@ -92,6 +92,49 @@ class ToolsCog(commands.Cog):
         embed = discord.Embed(title=f"ID: `{chan_id}`", colour=discord.Colour(0x7ed321))
         await ctx.send(embed=embed)
 
+    # .id_batch
+    @commands.command(aliases=['id_batch'])
+    async def chan_id_batch(self, ctx, pastebin_id: str = None):
+        # TODO: Seems to be skipping the first link for whatever reason * NEED TO FIX
+
+        embed = discord.Embed(title=f"Processing...", colour=discord.Colour(0xf8e71c))
+        msg = await ctx.send(embed=embed)
+
+        pastebin_url = f'https://pastebin.com/raw/{pastebin_id}'
+        # Pass a user-agent so Pastebin doesn't think we're a bot
+        ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0'
+        resp = requests.get(pastebin_url, headers={'User-Agent': ua})
+
+        if resp.text != 'Error with this ID!':
+            # Preprocessing (replace the "carriage returns" and random trailing spaces)
+            links = resp.text.split('\n')
+            links = [link.replace('\r', '').replace(' ', '') for link in links]
+
+            ids = []
+            processed = 0
+            for link in links:
+                # Status updates
+                embed = discord.Embed(title=f"Processed: `{processed}` out of `{len(links)}`", colour=discord.Colour(0xf8e71c))
+                await msg.edit(embed=embed)
+
+                # Get chan ID and add to list
+                chan_id = self.find_chan_id(link=link)
+                ids.append(chan_id)
+
+                processed += 1
+
+            # TODO: Implement message splitting
+            # Without message splitting, current limit is about 80 links or so
+            ids_str = '\n'.join(ids)
+            embed = discord.Embed(title=f"IDs:", description=f"```{ids_str}```", colour=discord.Colour(0x7ed321))
+            await ctx.send(embed=embed)
+
+            await msg.delete()      # delete the status message
+
+        else:
+            embed = discord.Embed(title=f'Invalid Pastebin ID :confused:', colour=discord.Colour(0xd0021b))
+            await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(ToolsCog(bot))
