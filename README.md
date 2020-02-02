@@ -1,6 +1,18 @@
-# Game Resale Bot
+# Purpose
 
-Utility Discord bot for the [YouTube Archiving Project](https://discordapp.com/invite/tTJk6az).
+Utility Discord bot for the [Distributed YouTube Archive](https://archives.team/).
+
+The purpose of the Distributed YouTube Archive is to preserve valuable YouTube content, and here's a blurb from our purpose statement:
+
+
+> Welcome to the Distributed Youtube Archive!
+> 
+> This [Discord] server exists to organize a distributed archive of youtube channels and videos.
+> YouTube hosts a variety of valuable content, and as its policies change over time, some of that content becomes at risk of being deleted.
+> To prevent valuable channels and videos from being lost, the contributors here at the Archive download channels and store them.
+> 
+> To make that data available to others we record that we have it in a public index spreadsheet. A central, cloud-hosted video storage solution is also in the works.
+
 
 ## To run:
 
