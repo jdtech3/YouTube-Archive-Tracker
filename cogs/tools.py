@@ -9,7 +9,6 @@ import discord
 from discord.ext import commands
 
 import requests                     # for link -> API key
-from bs4 import BeautifulSoup
 from datetime import datetime       # for embed timestamps
 
 import sheets.crud
@@ -20,17 +19,13 @@ class ToolsCog(commands.Cog):
         self.bot = bot
 
     # Get channel ID from link
-    def find_chan_id(self, link: str = None):
+    @staticmethod
+    def find_chan_id(link: str = None):
         if link is not None:
-            if link[-1] == '/':
-                link += 'videos'
-            else:
-                link += '/videos'
+            link = link.replace('youtube.com', 'invidio.us')
+            resp = requests.get(link)
 
-            resp = requests.get(f"{link}/videos")
-            soup = BeautifulSoup(resp.text, features='html.parser')
-
-            chan_id = soup.find('meta', {'itemprop': 'channelId'})['content']
+            chan_id = resp.url.partition('/channel/')[2]
             return chan_id
 
         else:
@@ -40,7 +35,7 @@ class ToolsCog(commands.Cog):
     @commands.command(name='view', aliases=['check'])
     async def view_chan_info(self, ctx, link: str = None):
         if link is not None:
-            records = sheets.crud.read(channel_id=self.find_chan_id(link=link))
+            records = sheets.crud.read(channel_id=ToolsCog.find_chan_id(link=link))
             for chan in records:
                 embed = discord.Embed(title=chan.name, colour=discord.Colour(0x7ed321), url=chan.link, timestamp=datetime.now())
 
@@ -74,21 +69,18 @@ class ToolsCog(commands.Cog):
     # .totalvids / .totalvideos
     @commands.command(name='totalvideos', aliases=['totalvids'])
     async def total_videos(self, ctx, link: str = None):
-        chan_id = self.find_chan_id(link=link)
-        url = f'https://www.youtube.com/playlist?list={chan_id.replace("UC","UU")}'
-        resp = requests.get(url)
-        soup = BeautifulSoup(resp.text, features='html.parser')
+        chan_id = ToolsCog.find_chan_id(link=link)
+        url = f'https://invidio.us/api/v1/playlists/{chan_id.replace("UC", "UU")}'
+        data = requests.get(url).json()
 
-        chan_name = soup.select_one('#c4-primary-header-contents > div > div > div:nth-child(1) > h1 > span > span > span > a').string
-        video_count = soup.select_one('#pl-header > div.pl-header-content > ul > li:nth-child(2)').string.replace(' videos','')
-
-        embed = discord.Embed(title=f"{chan_name} has `{video_count}` videos.", colour=discord.Colour(0x7ed321))
+        embed = discord.Embed(title=f"{data['author']} has `{data['videoCount']}` videos.", colour=discord.Colour(0x7ed321))
         await ctx.send(embed=embed)
 
     # .id
     @commands.command(aliases=['id'])
     async def chan_id(self, ctx, link: str = None):
-        chan_id = self.find_chan_id(link=link)
+        chan_id = ToolsCog.find_chan_id(link=link)
+
         embed = discord.Embed(title=f"ID: `{chan_id}`", colour=discord.Colour(0x7ed321))
         await ctx.send(embed=embed)
 
@@ -118,7 +110,7 @@ class ToolsCog(commands.Cog):
                 await msg.edit(embed=embed)
 
                 # Get chan ID and add to list
-                chan_id = self.find_chan_id(link=link)
+                chan_id = ToolsCog.find_chan_id(link=link)
                 ids.append(chan_id)
 
                 processed += 1
