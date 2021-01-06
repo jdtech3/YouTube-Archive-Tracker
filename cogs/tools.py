@@ -14,6 +14,7 @@ from datetime import datetime       # for embed timestamps
 
 import sheets.crud
 
+_ua_header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0'}
 
 class ToolsCog(commands.Cog):
     def __init__(self, bot):
@@ -24,7 +25,7 @@ class ToolsCog(commands.Cog):
     def find_chan_id(link: str = None):
         if link is not None:
             link = link.replace('youtube.com', 'invidious.snopyta.org').replace('www.','')
-            resp = requests.get(link)
+            resp = requests.get(link, headers=_ua_header)
 
             #chan_id = resp.url.partition('/channel/')[2]
             chan_id = re.findall(r'channel:(.+?)"', resp.text)[0].strip()
@@ -72,8 +73,8 @@ class ToolsCog(commands.Cog):
     @commands.command(name='totalvideos', aliases=['totalvids'])
     async def total_videos(self, ctx, link: str = None):
         chan_id = ToolsCog.find_chan_id(link=link)
-        url = f'https://invidious.snopyta.org/api/v1/playlists/{chan_id.replace("UC", "UU")}'
-        data = requests.get(url).json()
+        url = f'https://invidious.snopyta.org/api/v1/playlists/{chan_id}'
+        data = requests.get(url, headers=_ua_header).json()
 
         embed = discord.Embed(title=f"{data['author']} has `{data['videoCount']}` videos.", colour=discord.Colour(0x7ed321))
         await ctx.send(embed=embed)
