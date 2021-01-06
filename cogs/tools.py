@@ -9,6 +9,7 @@ import discord
 from discord.ext import commands
 
 import requests                     # for link -> API key
+import re                           # for regex parsing of HTML
 from datetime import datetime       # for embed timestamps
 
 import sheets.crud
@@ -22,10 +23,11 @@ class ToolsCog(commands.Cog):
     @staticmethod
     def find_chan_id(link: str = None):
         if link is not None:
-            link = link.replace('youtube.com', 'invidio.us')
+            link = link.replace('youtube.com', 'invidious.snopyta.org').replace('www.','')
             resp = requests.get(link)
 
-            chan_id = resp.url.partition('/channel/')[2]
+            #chan_id = resp.url.partition('/channel/')[2]
+            chan_id = re.findall(r'channel:(.+?)"', resp.text)[0].strip()
             return chan_id
 
         else:
@@ -70,7 +72,7 @@ class ToolsCog(commands.Cog):
     @commands.command(name='totalvideos', aliases=['totalvids'])
     async def total_videos(self, ctx, link: str = None):
         chan_id = ToolsCog.find_chan_id(link=link)
-        url = f'https://invidio.us/api/v1/playlists/{chan_id.replace("UC", "UU")}'
+        url = f'https://invidious.snopyta.org/api/v1/playlists/{chan_id.replace("UC", "UU")}'
         data = requests.get(url).json()
 
         embed = discord.Embed(title=f"{data['author']} has `{data['videoCount']}` videos.", colour=discord.Colour(0x7ed321))
