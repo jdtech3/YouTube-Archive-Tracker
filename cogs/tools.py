@@ -24,7 +24,7 @@ class ToolsCog(commands.Cog):
     @staticmethod
     def find_chan_id(link: str = None):
         if link is not None:
-            link = link.replace('youtube.com', 'invidious.snopyta.org').replace('www.','')
+            link = link.replace('youtube.com', 'yewtu.be').replace('www.','')
             resp = requests.get(link, headers=_ua_header)
 
             #chan_id = resp.url.partition('/channel/')[2]
@@ -73,10 +73,14 @@ class ToolsCog(commands.Cog):
     @commands.command(name='totalvideos', aliases=['totalvids'])
     async def total_videos(self, ctx, link: str = None):
         chan_id = ToolsCog.find_chan_id(link=link)
-        url = f'https://invidious.snopyta.org/api/v1/playlists/{chan_id}'
-        data = requests.get(url, headers=_ua_header).json()
+        url = f'https://yewtu.be/playlist?list={chan_id}'
+        resp = requests.get(url, headers=_ua_header)
 
-        embed = discord.Embed(title=f"{data['author']} has `{data['videoCount']}` videos.", colour=discord.Colour(0x7ed321))
+        # Regex saves the day :p
+        vids = re.findall(r'(?<=\|)(.+?)(?=videos\|)', ''.join(resp.text.split()))[0]
+        author = re.findall(r'(?<=<h3>Uploads from )(.+?)(?=<\/h3>)', ' '.join(resp.text.split()))[0]
+
+        embed = discord.Embed(title=f"{author} has `{vids}` videos.", colour=discord.Colour(0x7ed321))
         await ctx.send(embed=embed)
 
     # .id
