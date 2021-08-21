@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-crud.py - Implements the CRUD operations as well as the info
-          filling for the autofilled fields
+crud_requests.py - Implements the CRUD operations for
+                   channel archive requests
 """
 
 # Libs

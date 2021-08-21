@@ -20,5 +20,6 @@ config = {
     'auth_file': parser['Sheets']['auth_file'],
     'spreadsheet_name': parser['Sheets']['spreadsheet_name'],
     'tracker_worksheet_name': parser['Sheets']['tracker_worksheet_name'],
-    'requests_worksheet_name': parser['Sheets']['requests_worksheet_name']
+    'requests_worksheet_name': parser['Sheets']['requests_worksheet_name'],
+    'stats_worksheet_name': parser['Sheets']['stats_worksheet_name']
 }
