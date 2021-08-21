@@ -10,6 +10,7 @@ import discord
 from discord.ext import commands
 
 from config import config
+from sheets.read_stats import Stats
 
 __author__ = 'JDTech'
 __version__ = '0.1.0'
@@ -56,10 +57,13 @@ async def version(ctx):
 # Playing... animation
 async def presence_animation():
     while True:
-        await bot.change_presence(activity=discord.Game(f'Tracker | {"?"} videos archived'))
-        await asyncio.sleep(120)
-        await bot.change_presence(activity=discord.Game(f'/help | ~ made by {__author__} ~'))
-        await asyncio.sleep(30)
+        stats = Stats()
+        await bot.change_presence(activity=discord.Game(f'{stats.videos} videos'))
+        await asyncio.sleep(60)
+        await bot.change_presence(activity=discord.Game(f'{round(stats.size_tb, 2)} TB'))
+        await asyncio.sleep(60)
+        await bot.change_presence(activity=discord.Game(f'/help ▪ made by {__author__}'))
+        await asyncio.sleep(15)
 
 
 # Print some info

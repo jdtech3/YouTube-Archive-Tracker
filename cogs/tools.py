@@ -13,8 +13,10 @@ import re                           # for regex parsing of HTML
 from datetime import datetime       # for embed timestamps
 
 import sheets.crud
+from sheets.read_stats import Stats
 
 _ua_header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:85.0) Gecko/20100101 Firefox/85.0'}
+
 
 class ToolsCog(commands.Cog):
     def __init__(self, bot):
@@ -133,6 +135,23 @@ class ToolsCog(commands.Cog):
         else:
             embed = discord.Embed(title=f'Invalid Pastebin ID :confused:', colour=discord.Colour(0xd0021b))
             await ctx.send(embed=embed)
+
+    @commands.command()
+    async def stats(self, ctx):
+        stats = Stats()
+
+        embed = discord.Embed(title=f"Processing...", colour=discord.Colour(0xf8e71c))
+        msg = await ctx.send(embed=embed)
+
+        embed = discord.Embed(title=f':bar_chart: Current Stats', colour=discord.Colour(0x7ed321), timestamp=datetime.now())
+        embed.add_field(name='❱ Channels backed up', value=stats.channels)
+        embed.add_field(name='❱ Contributors', value=stats.contributors)
+        embed.add_field(name='❱ Total archive size', value=f'{round(stats.size_tb, 2)} TB')
+        embed.add_field(name='❱ Average video size', value=f'{round(stats.avg_size_gb, 2)} GB')
+        embed.add_field(name='❱ Total videos (incl. duplicates)', value=stats.videos)
+        embed.add_field(name='❱ % of channels with >1 backup', value=f'{round(stats.duplicate_channels_percentage, 1)}%')
+        embed.add_field(name='❱ Unique languages', value=stats.languages)
+        await msg.edit(embed=embed)
 
 
 def setup(bot):
