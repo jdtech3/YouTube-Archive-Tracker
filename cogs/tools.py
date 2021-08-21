@@ -145,10 +145,10 @@ class ToolsCog(commands.Cog):
 
         embed = discord.Embed(title=f':bar_chart: Current Stats', colour=discord.Colour(0x7ed321), timestamp=datetime.now())
         embed.add_field(name='❱ Channels backed up', value=stats.channels)
-        embed.add_field(name='❱ Contributors', value=stats.contributors)
-        embed.add_field(name='❱ Total archive size', value=f'{round(stats.size_tb, 2)} TB')
-        embed.add_field(name='❱ Average video size', value=f'{round(stats.avg_size_gb, 2)} GB')
         embed.add_field(name='❱ Total videos (incl. duplicates)', value=stats.videos)
+        embed.add_field(name='❱ Total archive size', value=f'{round(stats.size_tb, 2)} TB')
+        embed.add_field(name='❱ Contributors', value=stats.contributors)
+        embed.add_field(name='❱ Average video size', value=f'{round(stats.avg_size_gb, 2)} GB')
         embed.add_field(name='❱ % of channels with >1 backup', value=f'{round(stats.duplicate_channels_percentage, 1)}%')
         embed.add_field(name='❱ Unique languages', value=stats.languages)
         await msg.edit(embed=embed)

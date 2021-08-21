@@ -56,13 +56,16 @@ async def version(ctx):
 
 # Playing... animation
 async def presence_animation():
+    WATCHING = discord.ActivityType.watching
+    STREAMING = discord.ActivityType.streaming
+
     while True:
         stats = Stats()
-        await bot.change_presence(activity=discord.Game(f'{stats.videos} videos'))
+        await bot.change_presence(activity=discord.Activity(name=f'{stats.videos} videos', type=WATCHING))
         await asyncio.sleep(60)
-        await bot.change_presence(activity=discord.Game(f'{round(stats.size_tb, 2)} TB'))
+        await bot.change_presence(activity=discord.Activity(name=f'{round(stats.size_tb, 2)} TB', type=WATCHING))
         await asyncio.sleep(60)
-        await bot.change_presence(activity=discord.Game(f'/help ▪ made by {__author__}'))
+        await bot.change_presence(activity=discord.Activity(name=f'/help ▪ made by {__author__}', type=STREAMING))
         await asyncio.sleep(15)
 
 
