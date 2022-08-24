@@ -30,7 +30,7 @@ class ToolsCog(commands.Cog):
             resp = requests.get(link, headers=_ua_header)
 
             #chan_id = resp.url.partition('/channel/')[2]
-            chan_id = re.findall(r'channel:(.+?)"', resp.text)[0].strip()
+            chan_id = re.findall(r'<a href="https://www\.youtube\.com/channel/([a-zA-Z]+([0-9]+[a-zA-Z]+)+)">View channel on YouTube</a>', resp.text)[0][0]
             return chan_id
 
         else:
