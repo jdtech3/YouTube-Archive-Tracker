@@ -17,12 +17,16 @@ __version__ = '0.1.0'
 
 
 # Default enabled cogs
-initial_cogs = ['cogs.admin', 'cogs.tools', 'cogs.help']
+initial_cogs = ['cogs.admin', 'cogs.tools', 'cogs.help', 'cogs.projects']
 
+
+# Intents
+intents = discord.Intents.default()
+intents.members = True
 
 # Bot stuff
 TOKEN = config['bot_token']
-bot = commands.Bot(command_prefix=config['bot_prefix'])
+bot = commands.Bot(command_prefix=config['bot_prefix'], intents=intents)
 
 
 # Disallow calling the bot in PMs
